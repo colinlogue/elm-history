@@ -1,4 +1,4 @@
-module Advanced.Save exposing (..)
+module Save.Advanced exposing (..)
 
 type alias NodeId = Int
 

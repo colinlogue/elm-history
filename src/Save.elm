@@ -1,6 +1,6 @@
 module Save exposing (..)
 
-import Advanced.Save as Advanced
+import Save.Advanced as Advanced
 
 type alias Save state = Advanced.Save state state
 
