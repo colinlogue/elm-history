@@ -21,6 +21,7 @@ config =
       <| Random.uniform ("a")
         [ "b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"
         , "q","r","s","t","u","v","w","x","y","z" ]
+  , maxBranch = Nothing
   }
 
 suite : Test
@@ -29,12 +30,12 @@ suite =
     [ test "init produces no history" <|
       \_ ->
         Expect.equal
-          (History.init always 0).history
+          (History.init always Nothing 0).history
           []
     , test "init produces no futures" <|
       \_ ->
         Expect.equal
-          (History.init always 0).futures
+          (History.init always Nothing 0).futures
           []
     , fuzz (Fuzz.save config "") "nextId is unique after push" <|
       \save ->

@@ -34,10 +34,11 @@ actionList =
 type alias Config state diff =
   { update : diff -> state -> state
   , diffGen : state -> Generator diff
+  , maxBranch : Maybe Int
   }
 
 save : Config state diff -> state -> Generator (History state diff)
-save {update, diffGen} initial =
+save {update, diffGen, maxBranch} initial =
   let
     applyAction
       : Action
@@ -68,5 +69,5 @@ save {update, diffGen} initial =
         (\actions ->
           List.foldl
             applyAction
-            (Random.constant <| History.init update initial)
+            (Random.constant <| History.init update maxBranch initial)
             actions)
