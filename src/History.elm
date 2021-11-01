@@ -86,7 +86,7 @@ current = Advanced.current
 history : History state -> List state
 history save =
   List.foldl
-    (Advanced.getNodeDiff >> (::))
+    (Advanced.getSaveDiff >> (::))
     [ save.initial ]
     save.history
 

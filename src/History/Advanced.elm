@@ -9,14 +9,14 @@ type SavePoint diff
     , futures : (List (SavePoint diff))
     }
 
-getNodeDiff : SavePoint diff -> diff
-getNodeDiff (SaveNode {diff})= diff
+getSaveDiff : SavePoint diff -> diff
+getSaveDiff (SaveNode {diff})= diff
 
-getNodeId : SavePoint diff -> SaveId
-getNodeId (SaveNode {id}) = id
+getSaveId : SavePoint diff -> SaveId
+getSaveId (SaveNode {id}) = id
 
-getNodeFutures : SavePoint diff -> List (SavePoint diff)
-getNodeFutures (SaveNode{futures}) = futures
+getSaveFutures : SavePoint diff -> List (SavePoint diff)
+getSaveFutures (SaveNode{futures}) = futures
 
 type alias History state diff =
   { initial : state
@@ -38,7 +38,7 @@ init update initial =
 current : History state diff -> state
 current save =
   List.foldr
-    (getNodeDiff >> save.update)
+    (getSaveDiff >> save.update)
     save.initial
     save.history
 

@@ -11,7 +11,7 @@ import Test exposing (..)
 
 allIds : History state diff -> List SaveId
 allIds {history, futures} =
-  List.foldr (History.getNodeId >> (::)) [] (history ++ futures)
+  List.foldr (History.getSaveId >> (::)) [] (history ++ futures)
 
 config : Fuzz.Config String String
 config =
