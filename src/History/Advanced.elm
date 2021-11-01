@@ -24,15 +24,21 @@ type alias History state diff =
   , futures : List (SavePoint diff)
   , update : diff -> state -> state
   , nextId : SaveId
+  , maxBranching : Maybe Int
   }
 
-init : (diff -> state -> state) -> state -> History state diff
-init update initial =
+init
+  : (diff -> state -> state)
+  -> Maybe Int
+  -> state
+  -> History state diff
+init update maxBranch initial =
   { initial = initial
   , history = []
   , futures = []
   , update = update
   , nextId = 0
+  , maxBranching = maxBranch
   }
 
 current : History state diff -> state
@@ -96,12 +102,22 @@ redoAll save =
 
 push : diff -> History state diff -> History state diff
 push diff save =
+  let
+    futures : List (SavePoint diff)
+    futures =
+      case save.maxBranching of
+        Just limit ->
+          List.take limit save.futures
+        
+        Nothing ->
+          save.futures
+  in
   { save
       | history =
         SaveNode
           { id = save.nextId
           , diff = diff
-          , futures = save.futures
+          , futures = futures
           } :: save.history
       , futures = []
       , nextId = save.nextId + 1

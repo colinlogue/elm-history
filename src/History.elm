@@ -9,7 +9,7 @@ type alias History state = Advanced.History state state
 {-| Start a new edit history from a given initial state.
 -}
 begin : state -> History state
-begin = Advanced.init always
+begin = Advanced.init always (Just 1)
 
 {-| Add a new state to the history. This will create a new future path,
 replacing any current future. So if you undo a change and then push a
