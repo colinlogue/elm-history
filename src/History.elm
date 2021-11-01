@@ -43,6 +43,11 @@ returns the history unchanged.
 undo : History state -> History state
 undo = Advanced.undo
 
+{-| Undo all changes back to the initial state.
+-}
+undoAll : History state -> History state
+undoAll = Advanced.undoAll
+
 {-| Move forward one step in the history. Redoing from a state with no
 future path returns the history unchanged.
 
@@ -63,6 +68,11 @@ future path returns the history unchanged.
 -}
 redo : History state -> History state
 redo = Advanced.redo
+
+{-| Redo all changes until there are no future states.
+-}
+redoAll : History state -> History state
+redoAll = Advanced.redoAll
 
 {-| Get the current state in the history.
 
