@@ -1,17 +1,17 @@
 module SaveTests exposing (..)
 
 import Expect
-import Fuzz
+import History.Test.Fuzz
 import List.Extra as List
 import Random
-import Save.Advanced as Save exposing (Save, SaveNode, NodeId)
-import Save.Test.Fuzz as Fuzz
+import History.Advanced as History exposing (History, SavePoint, SaveId)
+import History.Test.Fuzz as Fuzz
 import Test exposing (..)
 
 
-allIds : Save state diff -> List NodeId
+allIds : History state diff -> List SaveId
 allIds {history, futures} =
-  List.foldr (Save.getNodeId >> (::)) [] (history ++ futures)
+  List.foldr (History.getNodeId >> (::)) [] (history ++ futures)
 
 config : Fuzz.Config String String
 config =
@@ -29,12 +29,12 @@ suite =
     [ test "init produces no history" <|
       \_ ->
         Expect.equal
-          (Save.init always 0).history
+          (History.init always 0).history
           []
     , test "init produces no futures" <|
       \_ ->
         Expect.equal
-          (Save.init always 0).futures
+          (History.init always 0).futures
           []
     , fuzz (Fuzz.save config "") "nextId is unique after push" <|
       \save ->
@@ -44,11 +44,11 @@ suite =
     , fuzz (Fuzz.save config "") "undo >> redo >> undo = undo" <|
       \save ->
         Expect.equal
-          (Save.current <| Save.undo <| Save.redo <| Save.undo save)
-          (Save.current <| Save.undo save)
+          (History.current <| History.undo <| History.redo <| History.undo save)
+          (History.current <| History.undo save)
     , fuzz (Fuzz.save config "") "redo >> undo >> redo = redo" <|
       \save ->
         Expect.equal
-          (Save.current <| Save.redo <| Save.undo <| Save.redo save)
-          (Save.current <| Save.redo save)
+          (History.current <| History.redo <| History.undo <| History.redo save)
+          (History.current <| History.redo save)
     ]

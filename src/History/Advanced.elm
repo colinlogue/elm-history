@@ -1,32 +1,32 @@
-module Save.Advanced exposing (..)
+module History.Advanced exposing (..)
 
-type alias NodeId = Int
+type alias SaveId = Int
 
-type SaveNode diff
+type SavePoint diff
   = SaveNode
-    { id : NodeId
+    { id : SaveId
     , diff : diff
-    , futures : (List (SaveNode diff))
+    , futures : (List (SavePoint diff))
     }
 
-getNodeDiff : SaveNode diff -> diff
+getNodeDiff : SavePoint diff -> diff
 getNodeDiff (SaveNode {diff})= diff
 
-getNodeId : SaveNode diff -> NodeId
+getNodeId : SavePoint diff -> SaveId
 getNodeId (SaveNode {id}) = id
 
-getNodeFutures : SaveNode diff -> List (SaveNode diff)
+getNodeFutures : SavePoint diff -> List (SavePoint diff)
 getNodeFutures (SaveNode{futures}) = futures
 
-type alias Save state diff =
+type alias History state diff =
   { initial : state
-  , history : List (SaveNode diff)
-  , futures : List (SaveNode diff)
+  , history : List (SavePoint diff)
+  , futures : List (SavePoint diff)
   , update : diff -> state -> state
-  , nextId : NodeId
+  , nextId : SaveId
   }
 
-init : (diff -> state -> state) -> state -> Save state diff
+init : (diff -> state -> state) -> state -> History state diff
 init update initial =
   { initial = initial
   , history = []
@@ -35,14 +35,14 @@ init update initial =
   , nextId = 0
   }
 
-current : Save state diff -> state
+current : History state diff -> state
 current save =
   List.foldr
     (getNodeDiff >> save.update)
     save.initial
     save.history
 
-undo : Save state diff -> Save state diff
+undo : History state diff -> History state diff
 undo save =
   case save.history of
     [] ->
@@ -59,7 +59,7 @@ undo save =
               } :: futures
       }
 
-redo : Save state diff -> Save state diff
+redo : History state diff -> History state diff
 redo save =
   case save.futures of
     [] ->
@@ -76,7 +76,7 @@ redo save =
             } :: save.history
       }
 
-push : diff -> Save state diff -> Save state diff
+push : diff -> History state diff -> History state diff
 push diff save =
   { save
       | history =
@@ -95,15 +95,15 @@ the same elements remain in the list but they may be in a different
 order.
 -}
 arrangeFutures
-  : (List (SaveNode diff) -> List (SaveNode diff))
-  -> Save state diff
-  -> Save state diff
+  : (List (SavePoint diff) -> List (SavePoint diff))
+  -> History state diff
+  -> History state diff
 arrangeFutures arrange save =
   { save | futures = arrange save.futures }
 
 {-| Moves the top future path to the back of the list.
 -}
-cycleFutures : Save state diff -> Save state diff
+cycleFutures : History state diff -> History state diff
 cycleFutures save =
   case save.futures of
     [] ->

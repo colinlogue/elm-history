@@ -1,7 +1,7 @@
-module Save.Test.Random exposing (..)
+module History.Test.Random exposing (..)
 
 import Random exposing (Generator)
-import Save.Advanced as Save exposing (Save, SaveNode)
+import History.Advanced as History exposing (History, SavePoint)
 
 type Action
   = Push
@@ -36,37 +36,37 @@ type alias Config state diff =
   , diffGen : state -> Generator diff
   }
 
-save : Config state diff -> state -> Generator (Save state diff)
+save : Config state diff -> state -> Generator (History state diff)
 save {update, diffGen} initial =
   let
     applyAction
       : Action
-      -> Generator (Save state diff)
-      -> Generator (Save state diff)
+      -> Generator (History state diff)
+      -> Generator (History state diff)
     applyAction act saveGen =
       case act of
         End ->
           saveGen
         
         Undo ->
-          Random.map (Save.undo) saveGen 
+          Random.map (History.undo) saveGen 
         
         Redo ->
-          Random.map (Save.redo) saveGen
+          Random.map (History.redo) saveGen
 
         Push ->
           saveGen
             |> Random.andThen
               (\save_ ->
-                diffGen (Save.current save_)
+                diffGen (History.current save_)
                   |> Random.map
                     (\diff ->
-                      Save.push diff save_))
+                      History.push diff save_))
   in
     actionList
       |> Random.andThen
         (\actions ->
           List.foldl
             applyAction
-            (Random.constant <| Save.init update initial)
+            (Random.constant <| History.init update initial)
             actions)

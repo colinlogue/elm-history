@@ -1,9 +1,9 @@
-module Save.Test.Fuzz exposing (..)
+module History.Test.Fuzz exposing (..)
 
 import Fuzz exposing (Fuzzer)
+import History.Advanced exposing (..)
+import History.Test.Random as Random
 import Random exposing (Generator)
-import Save.Advanced exposing (..)
-import Save.Test.Random as Random
 import Shrink
 
 
@@ -13,7 +13,7 @@ type alias Config state diff =
   , diffGen : state -> Generator diff
   }
 
-save : Config state diff -> state -> Fuzzer (Save state diff)
+save : Config state diff -> state -> Fuzzer (History state diff)
 save config initial =
   Fuzz.custom
     (Random.save config initial)
