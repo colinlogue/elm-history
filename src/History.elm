@@ -1,6 +1,8 @@
 module History exposing (..)
 
 import History.Advanced as Advanced
+import List.NonEmpty as NonEmpty exposing (NonEmpty)
+
 
 {-| Data structure for keeping a linear edit history.
 -}
@@ -10,6 +12,16 @@ type alias History state = Advanced.History state state
 -}
 begin : state -> History state
 begin = Advanced.init always (Just 1)
+
+{-| Transform a non-empty list of states into a history.
+-}
+fromList : NonEmpty state -> History state
+fromList states =
+  List.foldl
+    push
+    (begin <| NonEmpty.head states)
+    (NonEmpty.tail states)
+
 
 {-| Add a new state to the history. This will create a new future path,
 replacing any current future. So if you undo a change and then push a
