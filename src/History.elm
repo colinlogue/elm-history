@@ -1,5 +1,21 @@
 module History exposing (..)
 
+{-|
+
+# Definition
+@docs History
+
+# Create
+@docs begin, fromList
+
+# Operations
+@docs push, undo, undoAll, redo, redoAll
+
+# Access
+@docs current, history
+
+-}
+
 import History.Advanced as Advanced
 import List.NonEmpty as NonEmpty exposing (NonEmpty)
 
