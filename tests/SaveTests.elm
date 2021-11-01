@@ -1,7 +1,6 @@
 module SaveTests exposing (..)
 
 import Expect
-import History.Test.Fuzz
 import List.Extra as List
 import Random
 import History.Advanced as History exposing (History, SavePoint, SaveId)
