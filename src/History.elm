@@ -30,6 +30,12 @@ begin : state -> History state
 begin = Advanced.init always (Just 1)
 
 {-| Transform a non-empty list of states into a history.
+
+  (0, [1,2,3])
+    |> fromList
+    |> history
+  -- [0,1,2,3]
+
 -}
 fromList : NonEmpty state -> History state
 fromList states =
@@ -121,10 +127,11 @@ current = Advanced.current
 
 {-| Get the history up to and including the current state as a list.
 -}
-history : History state -> List state
+history : History state -> NonEmpty state
 history save =
   List.foldl
     (Advanced.getSaveDiff >> (::))
-    [ save.initial ]
+    []
     save.history
+      |> NonEmpty.fromCons save.initial
 
