@@ -59,6 +59,15 @@ undo save =
               } :: futures
       }
 
+undoAll : History state diff -> History state diff
+undoAll save =
+  case save.history of
+    [] ->
+      save
+
+    _ ->
+      undoAll (undo save)
+
 redo : History state diff -> History state diff
 redo save =
   case save.futures of
@@ -75,6 +84,15 @@ redo save =
             , futures = alternatives
             } :: save.history
       }
+
+redoAll : History state diff -> History state diff
+redoAll save =
+  case save.futures of
+    [] ->
+      save
+    
+    _ ->
+      redoAll (redo save)
 
 push : diff -> History state diff -> History state diff
 push diff save =
