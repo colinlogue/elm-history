@@ -3,12 +3,17 @@
 This package defines a `History` data structure that can be
 used to keep an edit history.
 
-There is a simple version in the `History` module that keeps
-a linear history of states.
+The `History` module exposes a simple API that, similar to
+the other `elm-history` packages available, allows keeping
+track of a linear progression of states. The
+`History.Advanced` module exposes a more general `History`
+type with the following differences:
 
-The `History.Advanced` module defines a `History`
-parameterized by a `state` type for the initial state and a
-`diff` type that describes changes to a state. This model
-also allows branching paths, so when you undo and push a new
-change, a new branch is created but the previous redo path
-is saved.
+1. The `History` data structure is a tree rather than a
+list, allowing multiple futures from any save point. This
+allows undoing a change and trying something else without
+losing any work.
+2. The edit tree has two type parameters: `state` and
+`diff`, where `state` is the type of the initial state and
+`diff` is a type that can be used to update a state with
+an update function of type `diff -> state -> state`.
